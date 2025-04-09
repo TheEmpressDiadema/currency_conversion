@@ -1,6 +1,6 @@
 import sqlite3
 
-class BaseDAO:
+class BaseDao:
 
     db_folder: str = "src\db\data"
     db_url: str
