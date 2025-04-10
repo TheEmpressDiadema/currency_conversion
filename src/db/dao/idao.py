@@ -1,16 +1,24 @@
 from typing import Protocol
 from abc import abstractmethod
 
-class IDao(Protocol):
+class DAO(Protocol):
 
     @abstractmethod
-    def insert(self):
+    def insert(self, entity):
         pass
 
     @abstractmethod
-    def update(self):
+    def update(self, entity):
         pass
 
     @abstractmethod
-    def delete(self):
+    def delete(self, id: int):
+        pass
+
+    @abstractmethod
+    def get_by_id(self, id: int):
+        pass
+
+    @abstractmethod
+    def get_all(self):
         pass
