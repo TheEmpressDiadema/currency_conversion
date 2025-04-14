@@ -1,68 +1,93 @@
+import logging
+
 from src.db.dao.idao import DAO
 from src.db.dao.base_dao import BaseDao
 
 from src.db.model.currency import Currency
 
-
 class CurrencyDao(BaseDao, DAO):
-    
+
+    table_name: str = "currency"
+    insert_query: str = "INSERT INTO currency(code, full_name, sign, created, updated) " \
+            "VALUES (?, ?, ?, ?, ?)"
+    update_query: str = "UPDATE currency " \
+        "SET code=?, full_name=?, sign=?, updated=? " \
+        "WHERE id=?"
+    delete_query = "DELETE FROM currency " \
+        "WHERE id=?"
+    select_single_query = "SELECT * FROM currency WHERE id=?"
+    select_all_query = "SELECT * FROM currency"
+
     def insert(self, entity: Currency):
 
-        query_string = "INSERT INTO currency(code, full_name, sign, created, updated)" \
-        "VALUES (?, ?, ?, ?, ?)"
-        values = (entity.code, entity.full_name, entity.sign, entity.created, entity.updated)
-        exception_string = "Can't insert currency entity"
-        self.execute_changes_query(query_string, values, exception_string)
-        entity.id = self._get_generated_id(table_name='currency')
+        try:
+            values = (entity.code, entity.full_name, entity.sign, entity.created, entity.updated)
 
-        
+            with self._get_connection() as connection:
+                cursor = connection.cursor()
+                cursor.execute(self.insert_query, values)
+                connection.commit()
+                entity.id = cursor.lastrowid
+
+        except Exception as insert_error:
+            logging.error("Can't insert currency entity", insert_error)
+            raise
+    
     def update(self, entity: Currency):
         
-        query_string = "UPDATE currency" \
-        "SET code=?, full_name=?, sign=?, updated=?" \
-        "WHERE id=?"
-        values = (entity.code, entity.full_name, entity.sign, entity.updated, entity.id)
-        exception_string = "Can't update currency entity"
-        self.execute_changes_query(query_string, values, exception_string)
+        try:
+            values = (entity.code, entity.full_name, entity.sign, entity.updated, entity.id)
+
+            with self._get_connection() as connection:
+                cursor = connection.cursor()
+                cursor.execute(self.update_query, values)
+                connection.commit()
+
+        except Exception as update_error:
+            logging.error("Can't update currency entity", update_error)
+            raise
 
     def delete(self, id: int):
 
-        query_string = "DELETE FROM currency" \
-        "WHERE id=?"
-        values=(id)
-        exception_string = "Can't delete currency entity"
-        self.execute_changes_query(query_string, values, exception_string)
+        try:
+            values = (id,)
+
+            with self._get_connection() as connection:
+                cursor = connection.cursor()
+                cursor.execute(self.delete_query, values)
+                connection.commit()
+
+        except Exception as delete_error:
+            logging.error("Can't delete currency entity", delete_error)
+            raise
 
     def get_by_id(self, id: int):
         
         try:
+            values = (id, )
 
-            with self.create_connection() as connection:
-
-                query_string = "SELECT * FROM currency WHERE id=?"
+            with self._get_connection() as connection:
 
                 cursor = connection.cursor()
-                cursor.execute(query_string, (id,))
+                cursor.execute(self.select_single_query, values)
 
                 return Currency(*cursor.fetchone())
         
-        except Exception as error_msg:
-
-            print(f"Can't select entity with id={id}", error_msg)
+        except Exception as select_single_error:
+            logging.error(f"Can't select currency entity with id={id}", select_single_error)
+            raise
 
     def get_all(self):
         
         try:
 
-            with self.create_connection() as connection:
-
-                query_string = "SELECT * FROM currency"
+            with self._get_connection() as connection:
 
                 cursor = connection.cursor()
-                cursor.execute(query_string)
+                cursor.execute(self.select_all_query)
                 result = cursor.fetchall()
 
                 return [Currency(*row) for row in result]
         
-        except Exception as error_msg:
-            print("Can't select all from currency", error_msg)
+        except Exception as select_all_error:
+            logging.error("Can't select all entites from currency", select_all_error)
