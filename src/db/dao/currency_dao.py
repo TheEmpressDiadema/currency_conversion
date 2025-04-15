@@ -61,7 +61,7 @@ class CurrencyDao(BaseDao, DAO):
             logging.error("Can't delete currency entity", delete_error)
             raise
 
-    def get_by_id(self, id: int):
+    def get_by_id(self, id: int) -> Currency:
         
         try:
             values = (id, )
@@ -77,7 +77,7 @@ class CurrencyDao(BaseDao, DAO):
             logging.error(f"Can't select currency entity with id={id}", select_single_error)
             raise
 
-    def get_all(self):
+    def get_all(self) -> list[Currency]:
         
         try:
 

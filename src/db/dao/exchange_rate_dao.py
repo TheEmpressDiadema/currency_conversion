@@ -61,7 +61,7 @@ class ExchangeRateDao(BaseDao, DAO):
             logging.error("Can't delete exchange rate entity", delete_error)
             raise
 
-    def get_by_id(self, id: int):
+    def get_by_id(self, id: int) -> ExchangeRate:
         
         try:
             values = (id, )
@@ -75,7 +75,7 @@ class ExchangeRateDao(BaseDao, DAO):
             logging.error(f"Can't select single exchange rate entity with id={id}", select_single_error)
             raise
 
-    def get_all(self):
+    def get_all(self) -> list[ExchangeRate]:
         
         try:
            
