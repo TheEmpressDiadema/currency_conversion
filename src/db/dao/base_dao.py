@@ -3,7 +3,7 @@ import logging
 
 from abc import abstractmethod
 
-class Singleton(type):
+class MonoState(type):
 
     _instances = {}
 
@@ -11,9 +11,9 @@ class Singleton(type):
         if cls not in cls._instances:
             instance = super().__call__(*args, **kwargs)
             cls._instances[cls] = instance
-        return cls._instance[cls]
+        return cls._instances[cls]
 
-class BaseDao:
+class BaseDao(metaclass=MonoState):
     def __init__(self, db_path: str):
         self._db_path: str = db_path
 
