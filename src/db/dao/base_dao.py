@@ -1,9 +1,21 @@
 import sqlite3
 import logging
 
+from abc import abstractmethod
+
+class Singleton(type):
+
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instance[cls]
+
 class BaseDao:
     def __init__(self, db_path: str):
-        self._db_path = db_path
+        self._db_path: str = db_path
 
     def _get_connection(self) -> sqlite3.Connection:
         
@@ -12,3 +24,23 @@ class BaseDao:
         
         except Exception as connect_error:
             logging.error(f"Can't connect {self._db_path}", connect_error)
+    
+    @abstractmethod
+    def insert(self, entity):
+        pass
+
+    @abstractmethod
+    def update(self, entity):
+        pass
+
+    @abstractmethod
+    def delete(self, id: int):
+        pass
+
+    @abstractmethod
+    def get_by_id(self, id: int):
+        pass
+
+    @abstractmethod
+    def get_all(self):
+        pass
