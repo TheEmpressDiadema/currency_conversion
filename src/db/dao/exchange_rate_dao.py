@@ -1,13 +1,12 @@
 import logging
 
-from src.db.dao.idao import DAO
 from src.db.dao.base_dao import BaseDao
 
 from src.db.model.exchange_rate import ExchangeRate
 
-class ExchangeRateDao(BaseDao, DAO):
+class ExchangeRateDao(BaseDao):
     
-    table_name = "exchange_rate"
+    table_name: str = "exchange_rate"
     insert_query: str = "INSERT INTO exchange_rate(base_currency_id, target_currency_id, rate, created, updated) " \
         "VALUES (?, ?, ?, ?, ?)"
     update_query: str = "UPDATE exchange_rate " \

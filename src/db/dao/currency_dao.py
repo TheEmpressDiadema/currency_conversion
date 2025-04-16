@@ -1,11 +1,10 @@
 import logging
 
-from src.db.dao.idao import DAO
 from src.db.dao.base_dao import BaseDao
 
 from src.db.model.currency import Currency
 
-class CurrencyDao(BaseDao, DAO):
+class CurrencyDao(BaseDao):
 
     table_name: str = "currency"
     insert_query: str = "INSERT INTO currency(code, full_name, sign, created, updated) " \
@@ -13,10 +12,10 @@ class CurrencyDao(BaseDao, DAO):
     update_query: str = "UPDATE currency " \
         "SET code=?, full_name=?, sign=?, updated=? " \
         "WHERE id=?"
-    delete_query = "DELETE FROM currency " \
+    delete_query: str = "DELETE FROM currency " \
         "WHERE id=?"
-    select_single_query = "SELECT * FROM currency WHERE id=?"
-    select_all_query = "SELECT * FROM currency"
+    select_single_query: str = "SELECT * FROM currency WHERE id=?"
+    select_all_query: str = "SELECT * FROM currency"
 
     def insert(self, entity: Currency):
 
@@ -91,3 +90,4 @@ class CurrencyDao(BaseDao, DAO):
         
         except Exception as select_all_error:
             logging.error("Can't select all entites from currency", select_all_error)
+            raise
