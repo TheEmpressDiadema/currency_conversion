@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+from typing import Optional
+
 
 @dataclass
 class ExchangeRate:
-    id: int
+    id: Optional[int]
     base_currency_id: int
     target_currency_id: int
     rate: float

@@ -4,6 +4,7 @@ from src.db.dao.base_dao import BaseDao
 
 from src.db.model.exchange_rate import ExchangeRate
 
+
 class ExchangeRateDao(BaseDao):
     
     table_name: str = "exchange_rate"

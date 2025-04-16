@@ -3,6 +3,7 @@ import logging
 
 from abc import abstractmethod
 
+
 class MonoState(type):
 
     _instances = {}
@@ -12,6 +13,7 @@ class MonoState(type):
             instance = super().__call__(*args, **kwargs)
             cls._instances[cls] = instance
         return cls._instances[cls]
+
 
 class BaseDao(metaclass=MonoState):
     def __init__(self, db_path: str):
