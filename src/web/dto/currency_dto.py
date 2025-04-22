@@ -1,5 +1,7 @@
-from dataclasses import dataclass
 from typing import Optional
+from dataclasses import dataclass, asdict
+
+from src.db.model.currency import Currency
 
 @dataclass
 class CurrencyDto:
@@ -11,11 +13,9 @@ class CurrencyDto:
     updated: str
 
     def __str__(self):
-        return str({
-            "id": self.id,
-            "code": self.code,
-            "full_name": self.full_name,
-            "sign": self.sign,
-            "created": self.created,
-            "updated": self.updated
-        })
+        return str(asdict(self))
+    
+    @classmethod
+    def from_model(cls, model: Currency):
+        return CurrencyDto(model.id, model.code, model.full_name, 
+                           model.sign, model.created, model.updated)

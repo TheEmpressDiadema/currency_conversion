@@ -1,5 +1,7 @@
-from dataclasses import dataclass
 from typing import Optional
+from dataclasses import dataclass, asdict
+
+from src.db.model.exchange_rate import ExchangeRate
 
 @dataclass
 class ExchangeRateDto:
@@ -11,10 +13,9 @@ class ExchangeRateDto:
     updated: str
 
     def __str__(self):
-        return str({
-            "id": self.id,
-            "base_currency_id": self.base_currency_id,
-            "target_currency_id": self.target_currency_id,
-            "created": self.created,
-            "updated": self.updated
-        })
+        return str(asdict(self))
+    
+    @classmethod
+    def from_model(cls, model: ExchangeRate):
+        return ExchangeRateDto(model.id, model.base_currency_id, model.target_currency_id,
+                               model.rate, model.created, model.updated)
