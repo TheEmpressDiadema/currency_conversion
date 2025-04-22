@@ -1,6 +1,5 @@
-from dataclasses import dataclass
 from typing import Optional
-
+from dataclasses import dataclass, asdict
 
 @dataclass
 class ExchangeRate:
@@ -12,10 +11,4 @@ class ExchangeRate:
     updated: str
 
     def __str__(self):
-        return str({
-            "id": self.id,
-            "base_currency_id": self.base_currency_id,
-            "target_currency_id": self.target_currency_id,
-            "created": self.created,
-            "updated": self.updated
-        })
+        return str(asdict(self))
