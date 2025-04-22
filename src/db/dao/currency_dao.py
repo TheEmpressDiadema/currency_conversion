@@ -7,16 +7,16 @@ from src.db.model.currency import Currency
 
 class CurrencyDao(BaseDao):
 
-    table_name: str = "currency"
-    insert_query: str = "INSERT INTO currency(code, full_name, sign, created, updated) " \
+    TABLE_NAME: str = "currency"
+    INSERT_QUERY: str = "INSERT INTO currency(code, full_name, sign, created, updated) " \
             "VALUES (?, ?, ?, ?, ?)"
-    update_query: str = "UPDATE currency " \
+    UPDATE_QUERY: str = "UPDATE currency " \
         "SET code=?, full_name=?, sign=?, updated=? " \
         "WHERE id=?"
-    delete_query: str = "DELETE FROM currency " \
+    DELETE_QUERY: str = "DELETE FROM currency " \
         "WHERE id=?"
-    select_single_query: str = "SELECT * FROM currency WHERE id=?"
-    select_all_query: str = "SELECT * FROM currency"
+    SELECT_SINGLE_QUERY: str = "SELECT * FROM currency WHERE id=?"
+    SELECT_ALL_QUERY: str = "SELECT * FROM currency"
 
     def insert(self, entity: Currency):
 
@@ -24,10 +24,10 @@ class CurrencyDao(BaseDao):
             values = (entity.code, entity.full_name, entity.sign, entity.created, entity.updated)
 
             with self._get_connection() as connection:
-                cursor = connection.cursor()
-                cursor.execute(self.insert_query, values)
-                connection.commit()
-                entity.id = cursor.lastrowid
+                with connection.cursor() as cursor:
+                    cursor.execute(self.INSERT_QUERY, values)
+                    connection.commit()
+                    entity.id = cursor.lastrowid
 
         except Exception as insert_error:
             logging.error("Can't insert currency entity", insert_error)
@@ -39,9 +39,9 @@ class CurrencyDao(BaseDao):
             values = (entity.code, entity.full_name, entity.sign, entity.updated, entity.id)
 
             with self._get_connection() as connection:
-                cursor = connection.cursor()
-                cursor.execute(self.update_query, values)
-                connection.commit()
+                with connection.cursor() as cursor:
+                    cursor.execute(self.UPDATE_QUERY, values)
+                    connection.commit()
 
         except Exception as update_error:
             logging.error("Can't update currency entity", update_error)
@@ -53,9 +53,9 @@ class CurrencyDao(BaseDao):
             values = (id,)
 
             with self._get_connection() as connection:
-                cursor = connection.cursor()
-                cursor.execute(self.delete_query, values)
-                connection.commit()
+                with connection.cursor() as cursor:
+                    cursor.execute(self.DELETE_QUERY, values)
+                    connection.commit()
 
         except Exception as delete_error:
             logging.error("Can't delete currency entity", delete_error)
@@ -68,10 +68,10 @@ class CurrencyDao(BaseDao):
 
             with self._get_connection() as connection:
 
-                cursor = connection.cursor()
-                cursor.execute(self.select_single_query, values)
+                with connection.cursor() as cursor:
+                    cursor.execute(self.SELECT_SINGLE_QUERY, values)
 
-                return Currency(*cursor.fetchone())
+                    return Currency(*cursor.fetchone())
         
         except Exception as select_single_error:
             logging.error(f"Can't select currency entity with id={id}", select_single_error)
@@ -83,11 +83,11 @@ class CurrencyDao(BaseDao):
 
             with self._get_connection() as connection:
 
-                cursor = connection.cursor()
-                cursor.execute(self.select_all_query)
-                result = cursor.fetchall()
+                with connection.cursor() as cursor:
+                    cursor.execute(self.SELECT_ALL_QUERY)
+                    result = cursor.fetchall()
 
-                return [Currency(*row) for row in result]
+                    return [Currency(*row) for row in result]
         
         except Exception as select_all_error:
             logging.error("Can't select all entites from currency", select_all_error)
