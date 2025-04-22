@@ -16,6 +16,7 @@ class MonoState(type):
 
 
 class BaseDao(metaclass=MonoState):
+    
     def __init__(self, db_path: str):
         self._db_path: str = db_path
 
